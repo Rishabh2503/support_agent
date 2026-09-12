@@ -25,6 +25,54 @@ The trivial majority baseline is reproducible from the committed CSV:
 A TF-IDF + logistic regression baseline is implemented in `src/train_baseline.py`. Its result must be generated after the raw dataset is downloaded and weak labels are created; it is not claimed here because those generated files and a model run are not committed.
 
 Likewise, no agent headline score is claimed. The repository does not contain the raw Kaggle file or API credentials, and the existing labels still require independent manual verification. This is preferable to presenting an unreproducible number as evidence.
+## Evaluation Results
+
+The agent was evaluated on the 162-example golden set.
+
+### Intent Classification
+
+| Metric | Result |
+|---|---:|
+| Accuracy | 49.38% |
+| Macro F1 | 42.07% |
+| Weighted F1 | 51.42% |
+
+The majority-intent baseline achieved 11.11% accuracy and 2.22% macro F1, so the retrieval + LLM agent substantially outperformed the simple baseline.
+
+The main classification failures occurred between semantically related support categories, particularly software updates vs. device performance, battery vs. software updates, iCloud/account vs. photo storage, and app functionality vs. repair/support.
+
+### Escalation
+
+| Metric | Result |
+|---|---:|
+| Precision | 66.04% |
+| Recall | 64.81% |
+| F1 | 65.42% |
+
+There were 54 gold escalation cases and the agent predicted escalation for 53 examples.
+
+### Reliability
+
+| Metric | Result |
+|---|---:|
+| Successful API calls | 162/162 |
+| Failed API calls | 0/162 |
+| Intent errors | 82 |
+| Escalation errors | 37 |
+
+### Failure Analysis
+
+The agent generally handled common battery, device-performance, payment, and software-update queries, but struggled when a customer message contained multiple overlapping symptoms.
+
+Examples include battery problems following an iOS update, iCloud/photo synchronization issues, and hardware/support requests that also mentioned purchasing or warranty context.
+
+The golden set also contains some potentially ambiguous labels. Therefore, classification errors should be interpreted together with manual review of the gold labels rather than assuming every mismatch represents a model failure.
+
+### Limitations
+
+The evaluation uses a relatively small 162-example golden set. Some labels are difficult to distinguish semantically and may contain annotation ambiguity. The retrieval system also uses lexical TF-IDF similarity rather than a semantic embedding model.
+
+The agent is intended as an experimental support assistant and does not authenticate users, access orders, process refunds, or perform account actions.
 
 ## Golden-set quality
 
