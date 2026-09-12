@@ -1,0 +1,18 @@
+@"
+.venv/
+.env
+__pycache__/
+*.pyc
+
+# Raw and generated datasets
+data/raw/
+data/archive/twcs/
+data/working/
+
+# Generated evaluation outputs
+evaluation/agent_predictions.csv
+evaluation/baseline_predictions.csv
+evaluation/golden_candidates.csv
+
+results/
+"@ | Set-Content .gitignore
