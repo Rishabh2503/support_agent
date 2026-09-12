@@ -9,18 +9,28 @@ OUTPUT = "data/working/train_pairs.csv"
 df = pd.read_csv(ALL_DATA)
 golden = pd.read_csv(GOLDEN)
 
-golden_ids = set(
-    golden["customer_tweet_id"].astype(int)
-)
+if "customer_tweet_id" in golden.columns:
+    golden_ids = set(golden["customer_tweet_id"].dropna().astype(int))
+    train = df[
+        ~df["customer_tweet_id"].astype(int).isin(golden_ids)
+    ].copy()
+else:
+    golden_pairs = set(
+        zip(
+            golden["customer_text"].fillna(""),
+            golden["brand_response"].fillna(""),
+        )
+    )
+    train = df[
+        ~df.apply(
+            lambda row: (row["customer_text"], row["brand_response"])
+            in golden_pairs,
+            axis=1,
+        )
+    ].copy()
 
 print(f"All working examples: {len(df):,}")
-print(f"Golden examples:      {len(golden_ids):,}")
-
-
-# Remove every golden example from training.
-train = df[
-    ~df["customer_tweet_id"].astype(int).isin(golden_ids)
-].copy()
+print(f"Golden examples:      {len(golden):,}")
 
 print(f"Training examples:     {len(train):,}")
 

@@ -210,6 +210,14 @@ for index, row in eval_df.iterrows():
                     "",
                 ),
 
+                "evidence": json.dumps(
+                    result.get(
+                        "evidence",
+                        [],
+                    ),
+                    ensure_ascii=False,
+                ),
+
                 "reason": result.get(
                     "reason",
                     "",
@@ -243,6 +251,7 @@ for index, row in eval_df.iterrows():
                 "predicted_escalation": "ERROR",
 
                 "reply": "",
+                "evidence": "",
                 "reason": str(e),
 
                 "status": "error",
